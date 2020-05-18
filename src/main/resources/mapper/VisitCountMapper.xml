@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qufu.mapper.VisitCountMapper">
+    <select id="SelectAll" resultType="VisitCount">
+        SELECT * from visitcount
+    </select>
+    <!--今天是否第一次访问-->
+    <select id="SelecTime" parameterType="String" resultType="int">
+        SELECT visitnumber from visitcount where visittime=#{visittime}
+    </select>
+
+    <select id="SelectInt" resultType="int">
+        SELECT count(*) from visitcount
+    </select>
+    <!--第一次访问就创建一个记录-->
+    <insert id="InsertCount" parameterType="VisitCount">
+        INSERT into visitcount (visitnumber,visittime) VALUES(#{visitnumber},#{visittime});
+    </insert>
+
+    <update id="Uapdete" parameterType="VisitCount">
+        UPDATE visitcount set visitnumber=#{visitnumber}+1 WHERE visittime=#{visittime}
+    </update>
+</mapper>

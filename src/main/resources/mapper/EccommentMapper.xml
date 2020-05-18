@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qufu.mapper.EccommentMapper">
+    <!--    查询指定用户评论的所有子评论-->
+    <select id="SelectAll" resultType="Eccomment">
+        select e.id1,e.eccid,e.ecctext,e.eccdate,e.ecid,e.id2,u.name name2,u.src
+        from eccomment e,user u
+        where u.id=e.id2 and e.ecid=#{ecid};
+    </select>
+    <select id="selectlike2" resultType="Integer">
+        select * from elike2 where ecid=#{ecid} and id=#{id} and eccid=#{eccid};
+    </select>
+    <select id="SelectLike2" resultType="int">
+        select count(*) from elike2 where eccid=#{eccid} and elike2='true';
+    </select>
+    <select id="Selectbol" resultType="String">
+        SELECT elike2 from elike2 where id=#{id} and eccid=#{eccid}
+    </select>
+    <select id="SelectName" resultType="String">
+        select name from user where id=#{id}
+    </select>
+    <!--    添加子评论-->
+    <insert id="addCommentc">
+        insert into eccomment (ecctext,eccdate,ecid,id1,id2) values (#{ecctext},#{eccdate},#{ecid},#{id1},#{id2})
+    </insert>
+    <!--  添加点赞  -->
+    <insert id="addlike2" parameterType="ELike2">
+        insert into elike2 (ecid, elike2, id,eccid) values (#{ecid},#{elike2}, #{id},#{eccid})
+    </insert>
+    <!--    删除子评论-->
+    <delete id="deleteEccomment">
+        delete from eccomment where id2=#{id2} and eccid=#{eccid}
+    </delete>
+    <delete id="deleteLike2">
+        delete from elike2 where eccid=#{eccid}
+    </delete>
+    <!--    更新点赞
+    1，用于不是本人操作
+    2.或者是取消点赞
+    -->
+    <update id="uplike2" parameterType="ELike2">
+        update elike2 set elike2=#{elike2} where id=#{id} and eccid=#{eccid}
+    </update>
+
+</mapper>

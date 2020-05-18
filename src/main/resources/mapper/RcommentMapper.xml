@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qufu.mapper.RcommentMapper">
+    <select id="Select" parameterType="int" resultType="Rcomment">
+        select * from rcomment where rcid=#{rcid};
+    </select>
+    <select id="SelectRcc" resultType="int">
+        select count(*) from rccomment where rcid=#{rcid};
+    </select>
+    <select id="SelectLike" resultType="int">
+        select count(*) from `like` where rcid=#{rcid} and llike='true';
+    </select>
+    <select id="Selectbol" resultType="String">
+        SELECT llike from `like` where id=#{id} and rcid=#{rcid}
+    </select>
+    <select id="SelectAll" resultType="Rcomment">
+        select r.rcid,r.rctext,r.rcdate,r.rid,r.id,u.name,u.src
+        from rcomment r,user u
+        where u.id=r.id and r.rid=#{rid}
+    </select>
+    <insert id="addComment" parameterType="Rcomment">
+        insert into rcomment (rid,rcdate, rctext, id) values (#{rid},#{rcdate},#{rctext},#{id})
+    </insert>
+    <!--   查询点赞
+         1.查询是否登记过
+         2.没有进行添加
+         3.有更新操作
+     -->
+
+    <select id="selectlike" resultType="Integer">
+        SELECT lid from `like` where rcid=#{rcid} and id=#{id}
+    </select>
+    <insert id="addlike">
+        insert into `like`(rcid, llike, id) values (#{rcid},#{llike}, #{id})
+    </insert>
+    <update id="uplike">
+        update `like` set llike=#{llike} where rcid=#{rcid} and id=#{id}
+    </update>
+    <delete id="deleteRcc">
+        delete from rcomment where rcid=#{rcid} and id=#{id}
+    </delete>
+    <delete id="deleteLike">
+        delete from `like` where rcid=#{rcid}
+    </delete>
+    <delete id="deleteLike2">
+        delete from like2 where rcid=#{rcid}
+    </delete>
+    <delete id="deleteRccomment">
+        delete from rccomment where rcid=#{rcid}
+    </delete>
+
+</mapper>

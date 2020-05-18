@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qufu.mapper.ReleaseMapper">
+    <insert id="InsertRelease" parameterType="Release">
+        INSERT INTO `release` (rid,rname, rdate, rtype, rurl, radname, radcode, rating, rcost, rtel, rtag, rlong, rlat)
+        VALUES (#{rid},#{rname}, #{rdate}, #{rtype}, #{rurl}, #{radname}, #{radcode},0,
+        0,#{rtel}, #{rtag}, #{rlong}, #{rlat})
+    </insert>
+    <select id="SelcetRidRname" parameterType="Release" resultType="Release">
+        SELECT * from `release`
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="rid!=null and rid!=''">
+                and rid=#{rid}
+            </if>
+            <if test="rname!=null and rname!=''">
+                and rname=#{rname}
+            </if>
+        </trim>
+    </select>
+    <select id="SelcetRelease" parameterType="Releasedata" resultType="Release">
+        SELECT * from `release` where
+        (rlong between #{rlong1} and #{rlong2} ) and
+        (rlat between #{rlat1} and #{rlat2}) and rtype LIKE '%${rtype}%'
+    </select>
+    <select id="SelcetReleaseCont" parameterType="Releasedata" resultType="Integer">
+        SELECT count(*) from `release` where
+        (rlong between #{rlong1} and #{rlong2} ) and
+        (rlat between #{rlat1} and #{rlat2}) and rtype LIKE '%${rtype}%'
+    </select>
+    <select id="SelcetRl" resultType="Release">
+        select rid,rlocation from `release`
+    </select>
+    <update id="Update" parameterType="Release">
+        update `release` set rlong=#{rlong},rlat=#{rlat} where rid=#{rid}
+    </update>
+
+    <select id="SelectR" resultType="Release">
+        select * from `release` where rid=#{rid}
+    </select>
+    <select id="SelectRid" resultType="Integer">
+        select rid from `release` where rid=#{rid}
+    </select>
+</mapper>

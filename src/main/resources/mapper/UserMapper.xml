@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qufu.mapper.UserMapper">
+    <!--查询所有数据
+       不是查询删除用户 就返回全部
+       其余交给服务器处理
+    -->
+    <select id="SelectUserid" resultType="User">
+        select * from user where id=#{id} and flag=1
+    </select>
+    <select id="SelectUser" resultType="User">
+        SELECT * from user where Anumber=#{Anumber} and password=#{password}
+    </select>
+    <select id="SelectUsert" resultType="User">
+        SELECT * from user where Anumber=#{Anumber}
+    </select>
+    <!--根据账号和密码-->
+    <!--
+
+    -->
+    <select id="Select" resultType="User">
+        SELECT * from user
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="flag!=null and flag!=''">
+                and flag=#{flag}
+            </if>
+        </trim>
+    </select>
+    <select id="Selectid" resultType="Integer">
+        SELECT id from user where flag=1
+    </select>
+    <!--  邮箱验证  -->
+    <select id="Flag" parameterType="User" resultType="Integer">
+        SELECT * from user where Emeil=#{Emeil}
+    </select>
+    <!--伪删除-->
+    <update id="UDetFlag" parameterType="int">
+        update user set
+        flag =0 where id=#{id}
+    </update>
+    <update id="UpdatePsd" parameterType="User">
+        update user set
+        password = #{password}
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="Emeil!=null and Emeil!=''">
+                and Emeil=#{Emeil}
+            </if>
+            <if test="Anumber!=null and Anumber!=''">
+                and Anumber=#{Anumber}
+            </if>
+        </trim>
+    </update>
+    <!--  修改资料  -->
+    <update id="UpdateSig" parameterType="User">
+        update user set password = #{password},
+        name = #{name},
+        gender = #{gender},
+        birthday = #{birthday},
+        signature = #{signature},
+        src=#{src}
+        where Anumber=#{Anumber};
+    </update>
+    <!--添加用户-->
+    <insert id="InsertUser" parameterType="User">
+        INSERT into `user`(Anumber,password,name,Emeil,gender,birthday,Creationdate,flag,src,uadmin)
+        VALUES(#{Anumber},#{password},#{name},#{Emeil},#{gender},#{birthday},#{Creationdate},1,#{src},0)
+    </insert>
+    <!--
+    聊天室的逻辑操作
+    -->
+    <select id="SelectUserWeb" resultType="UserWebscoket">
+        select * from userwebsocket where id1=#{id1}
+    </select>
+    <select id="SelectUserWeb1" resultType="UserWebscoket">
+        select * from userwebsocket where id2=#{id2}
+    </select>
+    <select id="SelectUserr" resultType="UserWebscoket">
+        select * from userwebsocket where id1=#{id1} and id2=#{id2}
+    </select>
+    <insert id="addUserWEb">
+        insert into userwebsocket (id1, id2) VALUES (#{id1}, #{id2})
+    </insert>
+    <delete id="deleUserWeb">
+        delete from userwebsocket where uwid=#{uwid}
+    </delete>
+    <!--    查询是不是管理员-->
+    <select id="SelcetAdmin" resultType="User">
+        select * from user where Anumber=#{Anumber} and password=#{password} and uadmin=1
+    </select>
+    <select id="selcetECount" resultType="int">
+        select count(*) from essay where ereview='true' and id=#{id}
+    </select>
+    <select id="selcetVCount" resultType="int">
+        select count(*) from video where vreview='true' and id=#{id}
+    </select>
+</mapper>

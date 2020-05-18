@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qufu.mapper.EssayMapper">
+    <insert id="addEssay" parameterType="Essay">
+        insert into essay (id, essaytitle, essaysource, essaycontent, essaytime, rid,
+        essayurl,dynamicTags,radname,radcode,ecount,ereview,esticky)
+        values (#{id}, #{essaytitle}, #{essaysource}, #{essaycontent}, #{essaytime}, #{rid},
+        #{essayurl},#{dynamicTags},#{radname},#{radcode},0,'false','0')
+    </insert>
+    <!--    更新记录-->
+    <update id="addEcount">
+        update essay set ecount=ecount+1 where essayid=#{essayid};
+    </update>
+    <select id="SelectAll" resultType="Essay">
+        select * from essay
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="rid!=null and rid!=''">
+                and rid=#{rid}
+            </if>
+            <if test="id!=null and id!=''">
+                and id=#{id}
+            </if>
+            and ereview='true'
+        </trim>
+        order by ecount desc,essaytime
+    </select>
+    <!--    查询自己审核中-->
+    <select id="SelectAllEr" resultType="Essay">
+        select * from essay where id=#{id} and ereview='false'
+        order by essaytime desc
+    </select>
+    <select id="SelectAllRname" resultType="Essay">
+        select * from essay
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="radname!=null and radname!=''">
+                and radname=#{radname}
+            </if>
+            <if test="radcode!=null and radcode!=''">
+                and radcode=#{radcode}
+            </if>
+            and ereview='true'
+        </trim>
+        order by ecount desc,essaytime LIMIT #{pag1},#{pag2}
+    </select>
+    <select id="SelectAllRname2" resultType="Essay">
+        select * from essay
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="radname!=null and radname!=''">
+                and radname=#{radname}
+            </if>
+            <if test="radcode!=null and radcode!=''">
+                and radcode=#{radcode}
+            </if>
+        </trim>
+        order by ecount desc,essaytime
+    </select>
+    <select id="Selectcount" resultType="int">
+        select ecount from essay where essayid=#{essayid};
+    </select>
+    <delete id="deletE">
+        delete from essay where essayid=#{essayid};
+    </delete>
+    <select id="SelectEcommet" resultType="int">
+        select count(*) from ecomment where essayid=#{essayid}
+    </select>
+    <select id="SelectElikecount" resultType="int">
+        select count(*) from eslike where essayid=#{essayid} and eslike='true'
+    </select>
+    <select id="SelcetEslike" resultType="String">
+        select eslike from eslike where essayid =#{essayid} and id=#{id}
+    </select>
+    <insert id="addEslike">
+        insert into eslike (id, essayid, eslike) values (#{id}, #{essayid}, #{eslike})
+    </insert>
+    <update id="updateEslike">
+        update eslike set eslike=#{eslike} where essayid =#{essayid} and id=#{id}
+    </update>
+
+    <select id="selectE" resultType="Essay">
+        select * from essay where essayid =#{essayid}
+    </select>
+    <select id="selecetAll" resultType="Essay">
+        select e.id,e.essayid,e.essaytitle,u.name,e.essayurl,e.ecount,e.essaytime,e.esticky from essay e,user u
+        where e.id=u.id and ereview='true'
+        order by e.esticky desc,e.ecount desc
+        LIMIT #{pag},7
+    </select>
+
+    <!--查询置顶的文章
+    或者是不置顶的文章
+    -->
+    <select id="selcetEsticky" resultType="Essay">
+        select e.essayid, e.id, e.essaytitle, e.essaysource, e.essaycontent, e.essaytime, e.rid, e.essayurl,
+        e.dynamicTags, e.radname, e.radcode, e.ecount, e.esticky, e.ereview,u.name
+        from essay e,user u where e.id=u.id and e.esticky=#{esticky} and ereview='true' order by e.ecount desc
+    </select>
+    <!--    置顶操作-->
+
+    <select id="selcetCount" resultType="int">
+        select count(*) from essay where ereview=#{ereview}
+    </select>
+    <update id="updateEsticky">
+        update essay set esticky=#{esticky} where essayid =#{essayid}
+    </update>
+    <select id="selecetAllV" resultType="Essay">
+        select e.id,e.essayid,e.essaytitle,e.essaycontent,u.name,e.essayurl,e.essaysource,e.essaytime from essay e,user
+        u
+        where e.id=u.id and ereview='false'
+        LIMIT #{pag},7
+    </select>
+    <!--    审核-->
+    <update id="updatEreview">
+        update essay set ereview='true' where essayid =#{essayid}
+    </update>
+    <delete id="deletEreview">
+        delete from essay where essayid =#{essayid}
+    </delete>
+    <select id="SelectLabel" resultType="Essay">
+        select * from essay where ereview='true' and esticky='0' and dynamicTags LIKE '%${dynamicTags}%' order by ecount
+    </select>
+</mapper>

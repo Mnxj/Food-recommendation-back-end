@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>邮件</title>
+</head>
+<body>
+<h1>重置密码</h1>
+<p>
+    您正在通过邮箱重置登录密码，该验证码60秒内有效，请勿泄露。<br>
+    你的验证码如下:<span th:text="${eamil}"></span><br>
+    如果当前操作不是本人触发，请忽略此邮件。
+    <br>谢谢
+</p>
+</body>
+</html>

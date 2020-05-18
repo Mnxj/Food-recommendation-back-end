@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qufu.mapper.VccommentMapper">
+    <!--    查询指定用户评论的所有子评论-->
+    <select id="SelectAll" resultType="Vccomment">
+        select v.id1,v.vccid,v.vcctext,v.vccdate,v.vcid,v.id2,u.name name2,u.src
+        from vccomment v,user u
+        where u.id=v.id2 and v.vcid=#{vcid};
+    </select>
+    <select id="selectlike2" resultType="Integer">
+        select * from vlike2 where vcid=#{vcid} and id=#{id} and vccid=#{vccid};
+    </select>
+    <select id="SelectLike2" resultType="int">
+        select count(*) from vlike2 where vccid=#{vccid} and vllik2='true';
+    </select>
+    <select id="Selectbol" resultType="String">
+        SELECT vllik2 from vlike2 where id=#{id} and vccid=#{vccid}
+    </select>
+    <select id="SelectName" resultType="String">
+        select name from user where id=#{id}
+    </select>
+    <!--    添加子评论-->
+    <insert id="addCommentc" parameterType="Vccomment">
+        insert into vccomment (vcctext, vccdate, vcid, id1, id2) values (#{vcctext},#{vccdate},#{vcid},#{id1},#{id2})
+    </insert>
+    <!--  添加点赞  -->
+    <insert id="addlike2" parameterType="VLike2">
+        insert into vlike2 (vcid, vllik2, id,vccid) values (#{vcid},#{vllik2}, #{id},#{vccid})
+    </insert>
+    <!--    删除子评论-->
+    <delete id="deleteVccomment">
+        delete from vccomment where id2=#{id2} and vccid=#{vccid}
+    </delete>
+    <delete id="deleteLike2">
+        delete from vlike2 where vccid=#{vccid}
+    </delete>
+    <!--    更新点赞
+    1，用于不是本人操作
+    2.或者是取消点赞
+    -->
+    <update id="uplike2" parameterType="VLike2">
+        update vlike2 set vllik2=#{vllik2} where id=#{id} and vccid=#{vccid}
+    </update>
+
+</mapper>

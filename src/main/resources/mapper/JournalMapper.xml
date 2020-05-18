@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qufu.mapper.JournalMapper">
+    <insert id="Jinsert" parameterType="Journal">
+        insert into journal (jdate, jtext,jname) values (#{jdate},#{jtext},#{jname})
+    </insert>
+    <select id="SelectJ" resultType="Journal">
+        select * from journal ORDER BY jdate DESC limit #{count},5
+    </select>
+    <select id="SelectCount" resultType="Integer">
+        select count(jdate) from journal
+    </select>
+</mapper>

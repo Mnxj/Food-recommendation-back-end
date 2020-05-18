@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qufu.mapper.VideoMapper">
+    <insert id="addVideo" parameterType="Videos">
+        insert into video (id, videotitle, videosource, videocontent, videotime, rid, videourl,
+        dynamicTags,radname,radcode,vcount,vreview)
+        values (#{id}, #{videotitle}, #{videosource}, #{videocontent}, #{videotime}, #{rid},
+        #{videourl},#{dynamicTags},#{radname},#{radcode},0,'false')
+    </insert>
+    <!--    更新播放记录-->
+    <update id="addVcount">
+        update video set vcount=vcount+1 where videoid=#{videoid};
+    </update>
+    <select id="SelectAll" resultType="Videos">
+        select * from video
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="rid!=null and rid!=''">
+                and rid=#{rid}
+            </if>
+            <if test="id!=null and id!=''">
+                and id=#{id}
+            </if>
+            and vreview='true'
+        </trim>
+        order by vcount desc,videotime
+    </select>
+    <!--    查询自己审核中-->
+    <select id="SelectAllEr" resultType="Videos">
+        select * from video where id=#{id} and vreview='false'
+        order by videotime desc
+    </select>
+    <select id="SelectAllRname" resultType="Videos">
+        select * from video
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="radname!=null and radname!=''">
+                and radname=#{radname}
+            </if>
+            <if test="radcode!=null and radcode!=''">
+                and radcode=#{radcode}
+            </if>
+            and vreview='true'
+        </trim>
+        order by vcount desc,videotime LIMIT #{pag},8;
+    </select>
+    <select id="SelectAllRname2" resultType="Videos">
+        select * from video
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="radname!=null and radname!=''">
+                and radname=#{radname}
+            </if>
+            <if test="radcode!=null and radcode!=''">
+                and radcode=#{radcode}
+            </if>
+            and vreview='true'
+        </trim>
+        order by vcount desc,videotime
+    </select>
+    <select id="Selectcount" resultType="int">
+        select vcount from video where videoid=#{videoid};
+    </select>
+    <delete id="deletE">
+        delete from video where videoid=#{videoid};
+    </delete>
+    <select id="SelctV" resultType="Videos">
+        select * from video where videoid=#{videoid}
+    </select>
+    <!--
+    查询相关视频，根据按照标题的等级查询
+    1\${}
+     2\concat('%',#{name,jdbcType=VARCHAR},'%')
+    排序 前四个
+    -->
+    <select id="SelectVideo" resultType="Videos">
+        select * from video where videoid!=#{videoid} and dynamicTags LIKE '%${dynamicTags}%' order by vcount,videotime
+        LIMIT 0,4;
+    </select>
+    <select id="SelectLabel" resultType="Videos">
+        select * from video where vreview='true' and dynamicTags LIKE '%${dynamicTags}%' order by vcount
+    </select>
+    <select id="SelectVcomment" resultType="int">
+        select count(*) from vcomment where videoid=#{videoid}
+    </select>
+    <select id="selecetAllV" resultType="Videos">
+        select v.id,v.videoid,v.videotitle,u.name,v.videourl,v.videosource,v.videotime,v.videocontent from video v,user
+        u
+        where v.id=u.id and vreview='false'
+        LIMIT #{pag},7
+    </select>
+    <select id="selecetAllVreview" resultType="Videos">
+        select v.videoid, v.id, v.videotitle, v.videosource, v.videocontent, v.videotime, v.rid, v.videourl,
+        v.dynamicTags,
+        v.radname, v.radcode, v.vcount, u.name from video v,user u
+        where v.id=u.id and vreview='true' order by v.vcount desc
+    </select>
+    <update id="updatVreview">
+        update video set vreview='true' where videoid =#{videoid}
+    </update>
+    <delete id="deletVreview">
+        delete from video where videoid =#{videoid}
+    </delete>
+    <select id="selcetCount" resultType="int">
+        select count(*) from video where vreview=#{vreview}
+    </select>
+</mapper>

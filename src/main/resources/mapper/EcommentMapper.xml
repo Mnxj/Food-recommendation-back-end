@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qufu.mapper.EcommentMapper">
+    <select id="Select" parameterType="int" resultType="Ecomment">
+        select * from ecomment where ecid=#{ecid};
+    </select>
+    <select id="SelectEcc" resultType="int">
+        select count(*) from eccomment where ecid=#{ecid};
+    </select>
+    <select id="SelectLike" resultType="int">
+        select count(*) from elike where ecid=#{ecid} and elike='true';
+    </select>
+    <select id="Selectbol" resultType="String">
+        SELECT elike from elike where id=#{id} and ecid=#{ecid}
+    </select>
+    <select id="SelectAll" resultType="Ecomment">
+        select e.ecid,e.ectext,e.ecdate,e.essayid,e.id,u.name,u.src
+        from ecomment e,user u
+        where u.id=e.id and e.essayid=#{essayid}
+    </select>
+    <insert id="addComment" parameterType="Ecomment">
+        insert into ecomment (essayid,ecdate, ectext, id) values (#{essayid},#{ecdate},#{ectext},#{id})
+    </insert>
+    <!--   查询点赞
+         1.查询是否登记过
+         2.没有进行添加
+         3.有更新操作
+     -->
+
+    <select id="selectlike" resultType="Integer">
+        SELECT elid from elike where ecid=#{ecid} and id=#{id}
+    </select>
+    <insert id="addlike">
+        insert into elike (ecid, elike, id) values (#{ecid},#{elike}, #{id})
+    </insert>
+    <update id="uplike">
+        update elike set elike=#{elike} where ecid=#{ecid} and id=#{id}
+    </update>
+    <delete id="deleteEcc">
+        delete from ecomment where ecid=#{ecid} and id=#{id}
+    </delete>
+    <delete id="deleteLike">
+        delete from elike where ecid=#{ecid}
+    </delete>
+    <delete id="deleteLike2">
+        delete from elike2 where ecid=#{ecid}
+    </delete>
+    <delete id="deleteEccomment">
+        delete from eccomment where ecid=#{ecid}
+    </delete>
+    <select id="SecletEid" resultType="Rcomment">
+        SELECT * from ecomment where essayid=#{essayid}
+    </select>
+    <delete id="deleteEid">
+        delete from ecomment where essayid=#{essayid}
+    </delete>
+</mapper>

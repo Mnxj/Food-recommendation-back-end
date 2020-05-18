@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qufu.mapper.LabelMapper">
+    <insert id="insertL">
+        insert into label (latext) values (#{latext})
+    </insert>
+    <delete id="delL">
+        delete from label where latext=#{latext};
+    </delete>
+    <select id="SelecetL" resultType="String">
+        select latext from label where latext=#{latext};
+    </select>
+    <select id="SelecetAll" resultType="String">
+        select latext from label
+    </select>
+</mapper>
